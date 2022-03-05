@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-
 public class Agente extends Thread{
     Scanner sc = new Scanner(System.in);
     String nome;
