@@ -1,15 +1,16 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+
 public class Agente extends Thread{
     Scanner sc = new Scanner(System.in);
-    String nome;
-    private int energia;
-    private int stoffa;
-    Scacchiera scacchiera;
-    Casella posizione;
-    Casella ricarica;
-    Casella[] adiacenti;
-    ArrayList<Casella> territori;
+    String nome;//nome dell'Agente
+    private int energia;//energia dell'agente
+    private int stoffa;//stoffa posseduta dall'agente
+    Scacchiera scacchiera;//riferimento all'istanza della scacchiera a cui puntano tutti gli altri agenti
+    Casella posizione;//riferimento all'istanza della casella in cui si trova l'agente
+    Casella ricarica;//riferimento all'istanza della casella con stazione di ricarica più vicina
+    Casella[] adiacenti;//array di rifermenti alle istanze delle caselle adiacenti alla casella in cui si trova l'agente
+    ArrayList<Casella> territori;//lista di riferimenti alle istanze delle caselle facenti parte del territorio dell'agente
 
     public Agente(String nome, Scacchiera scacchiera, Casella posizione, Casella ricarica, Casella[] adiacenti){
         this.nome = nome;
@@ -22,6 +23,7 @@ public class Agente extends Thread{
         territori = new ArrayList<>();
     }
 
+    //avvia le azioni degli agenti
     public void run(){
         System.out.println(getNome());
         System.out.println(adiacenti[1].getStato() +"(" +adiacenti[1].getOccupazione() +")" +"   " +adiacenti[2].getStato() +"(" +adiacenti[2].getOccupazione() +")" +"   " +adiacenti[3].getStato() +"(" +adiacenti[3].getOccupazione() +")\n"
@@ -124,82 +126,100 @@ public class Agente extends Thread{
         }
     }
 
+    //getter del nome dell'agente
     public String getNome(){
         return nome;
     }
 
+    //getter della stoffa posseduta dall'agente
     public int getStoffa(){
         return stoffa;
     }
 
+    //getter dell'energia dell'agente
     public int getEnergia(){
         return energia;
     }
 
+    //getter del riferimento alla casella in cui si trova l'agente
     public Casella getPosizione(){
         return posizione;
     }
 
+    //setter della posizione dell'agente per quando questo si sposta
     public void setPosizione(Casella posizione){
         this.posizione = posizione;
     }
 
+    //setter della stazione di ricarica più vicina per quando l'agente si sposta
     public void setRicarica(Casella ricarica){
         this.ricarica = ricarica;
     }
 
+    //setter delle caselle adiacenti alla posizione dell'agente per quando l'agente si sposta
     public void setAdiacenti(Casella[] adiacenti){
         this.adiacenti = adiacenti;
     }
 
-    public void setStoffa(int stoffapersa){
-        this.stoffa += stoffapersa;
+    //setter per aggiungere o sottrarre la stoffa posseduta dall'agente quando questo nè raccoglie o nè utilizza
+    public void setStoffa(int stoffa){
+        this.stoffa += stoffa;
     }
 
+    //metodo richiamato dalle stazioni di ricarica per ricaricare l'energia dell'agente
     public void addEnergia(){
         energia += 10;
     }
 
+    //spostamento a sinistra
     public void sinistra(){
         if(scacchiera.accesso(posizione.getX(), posizione.getY() -1, posizione, this))
             energia--;
     }
 
+    //spostamento a alto a sinistra
     public void alto_sinistra(){
         if(scacchiera.accesso(posizione.getX()-1, posizione.getY()-1, posizione, this))
             energia--;
     }
 
+    //spostamento in alto
     public void alto(){
         if(scacchiera.accesso(posizione.getX()-1, posizione.getY(), posizione, this))
             energia--;
     }
 
+    //spostamento in alto a destra
     public void alto_destra(){
         if(scacchiera.accesso(posizione.getX()-1, posizione.getY()+1, posizione, this))
             energia--;
     }
 
+    //spostamento a destra
     public void destra(){
         if(scacchiera.accesso(posizione.getX(), posizione.getY()+1, posizione, this))
             energia--;
     }
 
+    //spostamento in basso a destra
     public void basso_destra(){
         if(scacchiera.accesso(posizione.getX()+1, posizione.getY()+1, posizione, this))
             energia--;
     }
 
+    //spostamento in basso
     public void basso(){
         if(scacchiera.accesso(posizione.getX()+1, posizione.getY(), posizione, this))
             energia--;
     }
 
+    //spostamento in basso a sinistra
     public void basso_sinistra(){
         if(scacchiera.accesso(posizione.getX()+1, posizione.getY()-1, posizione, this))
             energia--;
     }
 
+    //metodo per compiere l'azione di piantare la bandiera ed entrare in possesso della casella in cui è posizionato
     public void pianta(){
         if(scacchiera.bandiera(posizione, nome, stoffa, adiacenti, this)){
             energia--;
